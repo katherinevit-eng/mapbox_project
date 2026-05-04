@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Production Assignment 6 Daphne Vitale</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.legend {
+  background-color: white;
+  border-radius: 5px;
+  bottom: 20px;
+  right: 10px;
+  padding: 10px;
+  position: absolute;
+  z-index: 999;
+  max-height: 300px;
+  overflow-y: auto;
+  width: 220px;
+  font-size: 11px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.legend h4 {
+  margin: 0 0 10px;
+}
+
+.legend div {
+  margin-bottom: 4px;
+}
+
+.legend-key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+}
+#map-title {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: white;
+  padding: 10px 14px;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 999;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="state-legend" class="legend">
+  <h4>Invasive Species</h4>
+</div>
+<div id="map-title">Invasive Plant Species Across Vermont</div>
+
+<script>
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHZiZWUiLCJhIjoiY21ubmlmanB4MGxueDJ0cHM1MDUxdXRucSJ9.uW8LIh-DErlDeMgjFreQ4A';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        center: [-72.45147, 43.871755],
+        style: 'mapbox://styles/dvbee/cmnnlsnww002501s34f6yfp0h',
+        zoom: 7
+
+    });
+const species = [
+    'False Spirea',
+    'Black Swallow-wort',
+    'Eurasian watermilfoil',
+    'Japanese knotweed',
+    'Common buckthorn',
+    'Amur honeysuckle',
+    'Common reed',
+    'Glossy buckthorn',
+    'Oriental bittersweet',
+    'Emerald Ash Borer',
+    'Coltsfoot',
+    'Sycamore maple',
+    'Japanese honeysuckle',
+    'Multiflora rose',
+    'Wild chervil',
+    'Purple loosestrife',
+    'Autumn olive',
+    'Border privet',
+    'Japanese barberry',
+    'Dames rocket',
+    'Norway maple',
+    'Goutweed',
+    'Morrows honeysuckle',
+    'Elongate Hemlock Scale',
+    'Winged euonymus',
+    'Black locust',
+    'Common barberry',
+    'Garlic mustard',
+    'Bisttersweet nightshade',
+    'Tatarian honeysuckle',
+    'Reed canary grass',
+    'Amur maple',
+    'Yellow iris',
+    'Hemlock Woolly Adelgid'
+];
+
+const colors = [
+    '#e04d4d',
+    '#f3b059',
+    '#eef15b',
+    '#c1e52e',
+    '#68c526',
+    '#63fb04',
+    '#bfbfbf',
+    '#32e79b',
+    '#19ebba',
+    '#0c75ed',
+    '#5f4cbd',
+    '#7f24e0',
+    '#a967d5',
+    '#962c2c',
+    '#6e3a12',
+    '#ef25d4',
+    '#97aa09',
+    '#f6cbcb',
+    '#1e1a1a',
+    '#488e68',
+    '#f014a3',
+    '#f2a1ec',
+    '#7e6db0',
+    '#7a1010',
+    '#e2c0a2',
+    '#2f6a5a',
+    '#335675',
+    '#e7f02d',
+    '#835b9f',
+    '#4dcfe0',
+    '#e04d4d',
+    '#e740e5',
+    '#d2ee1b',
+    '#3f9d53'
+];
+const legend = document.getElementById('state-legend');
+
+species.forEach((name, i) => {
+    const item = document.createElement('div');
+
+    const key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = colors[i];
+
+    const value = document.createElement('span');
+    value.textContent = name;
+
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+});
+
+map.on('click', (e) => {
+    const features = map.queryRenderedFeatures(e.point);
+
+    if (!features.length) return;
+
+    const feature = features[0];
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`
+            <strong>Species:</strong> ${feature.properties.InvasiveName || "Unknown"}
+        `)
+        .addTo(map);
+});
+</script>
+
+</body>
+</html>
